@@ -3,8 +3,8 @@ const { createApp } = Vue
 const app = createApp({
     data(){
         return {
-        eventoseventosFuturos: [],
-        eventosPasados: [],
+        pastEvents: [],
+        upcomingEvents: [],
         mayorAsistencia: "",
         menorAsistencia: "",
         mayorCapacidad: "",
@@ -16,17 +16,17 @@ const app = createApp({
         fetch( 'https://mindhub-xj03.onrender.com/api/amazing' )
         .then( response => response.json() )
         .then( data => { 
-            this.eventosFuturos = data.events.filter(event => event.date >= data.currentDate);
-            this.eventosPasados = data.events.filter(event => event.date < data.currentDate);
+            this.upcomingEvents = data.events.filter(event => event.date >= data.currentDate);
+            this.pastEvents = data.events.filter(event => event.date < data.currentDate);
 
-            this.mayorAsistencia = this.eventosPasados.sort((evento1, evento2) => {
+            this.mayorAsistencia = this.pastEvents.sort((evento1, evento2) => {
                 return (
                     (evento1.assistance / evento1.capacity) * 100 -
                     (evento2.assistance / evento2.capacity) * 100
                 );
             }).slice(-1)[0]
 
-            this.menorAsistencia = this.eventosPasados.sort((evento1, evento2) => {
+            this.menorAsistencia = this.pastEvents.sort((evento1, evento2) => {
                 return (
                     (evento1.assistance / evento1.capacity) * 100 -
                     (evento2.assistance / evento2.capacity) * 100
@@ -37,7 +37,7 @@ const app = createApp({
                 return ( evento1.capacity - evento2.capacity);
             }).slice(-1)[0]
             
-            this.eventosFuturos.forEach(event => {
+            this.upcomingEvents.forEach(event => {
                 if (!this.categories[event.category]) {
                     this.categories[event.category] = {
                         price: 0,
@@ -50,7 +50,7 @@ const app = createApp({
                 this.categories[event.category].estimate += event.estimate
             })
 
-            this.eventosPasados.forEach(event => {
+            this.pastEvents.forEach(event => {
                 if (!this.categories2[event.category]) {
                     this.categories2[event.category] = {
                         price: 0,
